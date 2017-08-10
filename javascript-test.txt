@@ -1,52 +1,149 @@
-﻿javascript 
-Given an array of integers. It is necessary to give the possibility to fill it to the client, as well as the random-fill button, with the choice of the number of array elements and the range of numbers. Write a function that displays 5 combinations of array elements whose sum is as close to 100 as possible, but not more than 100. In a combination, there can be any number of array elements. For output, use the console.log () function, and also specify the execution time by timer.
-
-Açıklama
---------------------------------
-[] - ile belirtilenler HTML elementleridir.{}-ile değerleri gösterilmiştir.
-
-[array length giriniz] : X {input=number field} (uzunluk girildikten sonra bu uzunlukta elemanları random integerlardan oluşan bir dizi oluşturun / Hesapla butonuna tıklandıktan sonra)
-
-[bir deger giriniz] : A {input=number field} (integer bir değer / 100 )
-
-[array elemanlarını girin] :{input=text field} (virgülle ayrılmış değerler (opsiyonel - eger ilk input girildiyse buna gerek yok))
-
-[Hesapla butonu] {button}
-
-
-
-Hesapla butonuna tıklandığında ekrana basılacak değerler:
-
-==>B dizisi (uzunluğu X)
-
-==>5 tane array ( C1 , C2 , C3 , C4 , C5 ) , her biri
-	-elemanları B nin alt kümesinden oluşan
-	-elemanları toplamı A ya eşit veya A dan küçük ve A ya en yakın 
-
-==>( C1 , C2 , C3 , C4 , C5 ) elemanlarının B deki index değerleri
-	  
-==> Hesaplama zamanı - Scripting çalışma zamanı
-
-
-Örneğin:
-
-	Enter the length of array: 10
-	Enter the maximum value of the array elements: 100
-
-OUTPUT
-------
-Source array:( 83 , 34 , 29 , 11 , 24 , 90 , 63 , 68 , 44 , 91 )
-Spent time:7 мс
-
-	sum=98 index of elements in source array 1,2,3,4
-
- 	sum=97 index of elements in source array 1,6
-
- 	sum=97 index of elements in source array 2,7
- 	sum=94 index of elements in source array 0,3
-
- 	sum=92index of elements in source array 2,6
-
-Ekte ayrıca bir örnek ekran görüntüsü mevcuttur.Herhangi bir sorunuz oluşursa ulaşmaktan çekinmeyin.
-
+﻿javascript 
+
+
+Given an array of integers. It is necessary to give the possibility to fill it to the client, as well as the random-fill button, with the choice of the number of array elements and the range of numbers. Write a function that displays 5 combinations of array elements whose sum is as close to 100 as possible, but not more than 100. In a combination, there can be any number of array elements. For output, use the console.log () function, and also specify the execution time by timer.
+
+
+
+
+
+Açıklama
+
+
+--------------------------------
+
+
+[] - ile belirtilenler HTML elementleridir.{}-ile değerleri gösterilmiştir.
+
+
+
+
+
+[array length giriniz] : X {input=number field} (uzunluk girildikten sonra bu uzunlukta elemanları random integerlardan oluşan bir dizi oluşturun / Hesapla butonuna tıklandıktan sonra)
+
+
+
+
+
+[bir deger giriniz] : A {input=number field} (integer bir değer / 100 )
+
+
+
+
+
+[array elemanlarını girin] :{input=text field} (virgülle ayrılmış değerler (opsiyonel - eger ilk input girildiyse buna gerek yok))
+
+
+
+
+
+[Hesapla butonu] {button}
+
+
+
+
+
+
+
+
+
+
+
+Hesapla butonuna tıklandığında ekrana basılacak değerler:
+
+
+
+
+
+==>B dizisi (uzunluğu X)
+
+
+
+
+
+==>5 tane array ( C1 , C2 , C3 , C4 , C5 ) , her biri
+
+
+	-elemanları B nin alt kümesinden oluşan
+
+
+	-elemanları toplamı A ya eşit veya A dan küçük ve A ya en yakın 
+
+
+
+
+
+==>( C1 , C2 , C3 , C4 , C5 ) elemanlarının B deki index değerleri
+
+
+	  
+
+
+==> Hesaplama zamanı - Scripting çalışma zamanı
+
+
+
+
+
+
+
+
+Örneğin:
+
+
+
+
+
+	Enter the length of array: 10
+
+
+	Enter the maximum value of the array elements: 100
+
+
+
+
+
+OUTPUT
+
+
+------
+
+
+Source array:( 83 , 34 , 29 , 11 , 24 , 90 , 63 , 68 , 44 , 91 )
+
+
+Spent time:7 мс
+
+
+
+
+
+	sum=98 index of elements in source array 1,2,3,4
+
+
+
+
+
+ 	sum=97 index of elements in source array 1,6
+
+
+
+
+
+ 	sum=97 index of elements in source array 2,7
+
+
+ 	sum=94 index of elements in source array 0,3
+
+
+
+
+
+ 	sum=92index of elements in source array 2,6
+
+
+
+
+
+
 (Verilen buton ve ya label isimleri çok önemli değildir.Önemli olan algoritmanın düzgün çalışması.)
