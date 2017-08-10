@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>TEST</title>
+<style>
+body{padding: 20px;font-size:13px;line-height:15px;font-family:Arial,Helvetica,sans-serif;}
+#cont{max-width:400px;}
+#cont div{height:30px;line-height:30px;padding-bottom:5px;}
+#cont div:nth-child(5){height: auto;line-height: 15px;}
+#cont div input{float:right;height:24px;margin-right:150px;width:60px;}
+#cont div:nth-child(n+3) input{width:210px;margin-right:0px;}
+#cont div #hesapla{float: right;}
+#cont+div{margin-bottom:10px;}
+#ot{position: fixed;bottom:0px;left:0;padding-left:10px;background: #333;width:100%;font-size:11px;line-height: 14px;color:#fff;}
+</style>
+</head>
+<body>
+<div id="cont">
+  <div>
+    <label for="arrayLength">Array length giriniz:</label>
+    <input id="arrayLength" type="number" placeholder="10">
+  </div>
+  <div>
+    <label for="arrayMax">Bir değer giriniz:</label>
+    <input id="arrayMax" type="number" placeholder="100">
+  </div>
+  <div>
+    <label for="arrayEl">Array elemanlarını giriniz:</label>
+    <input id="arrayEl" type="text">
+  </div>
+  <div>
+    <button id="hesapla">Hesapla</button>
+  </div>
+</div>
+<div>
+  Kaynak Array: <strong>( <span id="dizi">...</span> )</strong>
+</div>
+<div>
+  Script çalışma Zamanı: <strong><span id="sure">...</span> ms</strong>
+</div>
+<div>
+  <p>
+  Hesap sonuçları konsola yazdırılmaktadır.
+  </p>
+</div>
+<div id="ot">Orkun Tümer</div>
+
+<script>
+/*! Orkun Tümer */
+var d,f=[[],[],[]],ArrIndex=[],c=[],ci=[],temp=[],Arr=[],j=0,sayac=0,zerosIndex=[],jz=0,ArrFirst,arrayLength;
+function sec(a) { return document.getElementById(a) };
+sec('hesapla').addEventListener('click',hesapla);
+function getSum(a,b) { return a+=b; };
+function den(buyuk,buyukIndex) {
+  var buyukTop = buyuk.reduce(getSum);
+  var sArr=f[0][0].concat(),
+      sArrTop = f[2][0],
+      sArrI=0;
+  for(var i=1; i<5; i++) {
+    if(f[2][i] < sArrTop) {
+      sArr = f[0][i].concat();
+      sArrTop = f[2][i];
+      sArrI = i;
+    }
+  };//f içindeki en küçük bulundu
+  if(sArrTop<buyukTop) {
+    f[0].splice(sArrI,1,buyuk);
+    f[1].splice(sArrI,1,buyukIndex);
+    f[2].splice(sArrI,1,buyukTop);
+  }
+  if(sayac == 5 || f[2].reduce(getSum) == 500) { throw 'Hepsi 100 olarak bulundu'; }
+};
+function hesapla() { d = new Date().getTime();
+  console.clear();
+  var arrayEl = sec('arrayEl').value||0;
+  ArrM = parseInt(sec('arrayMax').value)||100;
+  if(arrayEl != 0) {
+    ArrFirst = arrayEl.split(',').map((e)=>{ return (!isNaN(parseInt(e)))?parseInt(e):0; });
+    ArrM = Math.max.apply(null,ArrFirst) + 1;
+  }
+  else {
+    arrayLength = parseInt(sec('arrayLength').value)||10;
+    ArrFirst = new Array(arrayLength);//[...new Array(arrayLength)].map(() => Math.floor(Math.random() * ArrM));
+    for(var i = 0; i < arrayLength;i++){ ArrFirst[i] = Math.floor(Math.random() * ArrM); };
+  }
+  sec('dizi').innerHTML = ArrFirst.join(', ');
+  try{
+    for(i=0;i<ArrFirst.length;i++){
+      if(ArrFirst[i] == 0){ zerosIndex[jz] = ''+i;jz++; }
+      else if(ArrFirst[i]<=100 && ArrFirst[i] != 0) {
+        Arr[j]=ArrFirst[i]; ArrIndex[j]=i; j++;
+      }
+    };
+    var ArrTop = Arr.reduce(getSum);
+    var ArrL = Arr.length;
+    if(ArrL == 0) { d=new Date().getTime();bitir(1);return; }//100'ün altında eleman yoksa
+    if(ArrTop <= 100) {
+      if(ArrTop == 100) { sayac++; }
+      var idx=[];
+      for(var i=0;i<ArrL;i++) { idx[i]=i; };
+      ekle(Arr,idx)
+    }
+    function komb(a, b) {
+      if (b == 0) { return; } 
+      else {
+        for (var i = a; i <= ArrL - b; ++i) {//array kombinasyonları(recursive)
+          if(ci.indexOf(i) != -1) { continue; }
+          c.push(Arr[i]); ci.push(i);
+          if(b != 1) { komb(i + 1, b - 1);c.pop();ci.pop(); }
+          else {
+            var buyuk=[],buyukIndex=[];var cCon = c.concat();var ciCon = ci.concat();
+            var cTop = cCon.reduce(getSum);var fark = ArrTop - cTop;var tempTop=0;
+            if((cTop + ArrM) < (100 - ArrM )) { return; }
+            if( fark <= 100 && fark > cTop) {
+              temp = Arr.concat();
+              for(var tr =0;tr<ci.length;tr++) { temp.splice(ci[tr],1,'ot'); };
+              var tempIndex = temp.map((en,ix)=>{ if(en=='ot') { return en; } else { return ix; } })
+                                  .filter((en)=>en!='ot');
+              temp = temp.filter((e)=>e!='ot');
+              tempTop = temp.reduce(getSum);//C(n/1) ise C(n/n-1)de hesaplandı
+              if(cTop >100 && tempTop >100) { c.pop();ci.pop();continue; }
+              if(cTop == 100 && tempTop == 100) { sayac = sayac + 2;ekle(cCon,ciCon);ekle(temp,tempIndex);c.pop();ci.pop();continue; }
+              if(cTop<=100 && tempTop <= 100) {
+                if(f[0].length < 5) {
+                  if(tempTop != 0) { ekle(temp,tempIndex);tempTop=0; }
+                  ekle(cCon,ciCon);c.pop();ci.pop();continue;
+                }
+                else {
+                  if(cTop>tempTop) { buyuk = cCon; buyukIndex = ciCon; }
+                  else { buyuk = temp; buyukIndex = tempIndex; }
+                  //ikilinin büyüğü belirlendi
+                }
+              }
+              else {
+                if(cTop<=100 && tempTop>100){
+                  if(cVarmi > 0) { c.pop();ci.pop();continue; }
+                  buyuk = cCon; buyukIndex = ciCon;
+                }
+                else {
+                  if(tempVarmi > 0) { c.pop();ci.pop();continue; }
+                  buyuk = temp; buyukIndex = tempIndex;
+                }
+              }
+            }
+            else { if(cTop <=100) { buyuk = cCon; buyukIndex = ciCon; } else { c.pop();ci.pop();continue ; } }
+            if(buyuk.length == 1 && buyuk[0] == 0) { c.pop();ci.pop();continue; }
+            if(buyuk.reduce(getSum) == 100) { sayac++; }
+            ekle(buyuk,buyukIndex); c.pop();ci.pop();continue;
+          }
+        };
+      }
+    };//komb
+    var donguSay = Math.floor(ArrL*0.5),start = 1;
+    if( ArrM < 80 && ArrL > 15 ) {
+      start = Math.ceil(100/(ArrM*0.7));
+      if(start > ArrL) { start = Math.floor(ArrL*0.5) }
+      var Top = Arr.slice(0,start).reduce(getSum);
+      if( Top < ( 100 - ArrM*2.5 )  && ArrTop < ( 100 - ArrM*2.5 ) ) {
+        var i = start;
+        while ( Top <= ( 100 - ArrM*2 ) && Top != ArrTop){
+          Top = Arr.slice(0,i).reduce(getSum);
+          i++;
+        }
+        if(Top == ArrTop) { start = ArrL - 1;donguSay = ArrL } else { start = i; }
+      }
+    }
+    d = new Date().getTime();
+    for(var son=start;son<=donguSay;son++) {
+      komb(0,son);
+    };
+    bitir();
+  }
+  catch(err) {
+    bitir();
+  }
+};//hesapla
+function ekle(buyuk,buyukIndex,a) {
+  if(f[1].filter((e)=>e.toString() == buyukIndex.toString()).length == 0){
+    if(f[0].length === 5) { den(buyuk,buyukIndex); }
+    else {
+      f[0].push(buyuk);
+      f[1].push(buyukIndex);
+      f[2].push(buyuk.reduce(getSum));
+    }
+    if(buyuk.reduce(getSum) == 100 && zerosIndex.length != 0 && a!=1) {
+      buyuk = buyuk.concat(0);
+      buyukIndex = buyukIndex.concat(zerosIndex.pop());
+      sayac++;
+      ekle(buyuk,buyukIndex,1);
+    }
+  }
+};//ekle
+function bitir(err) {
+  var sure = Math.abs(new Date().getTime() - d);var y=[];
+  console.log('Script çalışma Zamanı: '+sure+' ms');
+  sec('sure').innerHTML = sure;
+  if(err != 1) {
+    for (var i = 0; i < f[1].length; i++) {
+      f[1][i] = f[1][i].map((e,ind)=>{
+        if(f[0][i][ind] == 0) { return e; }
+        return ArrIndex[e];
+      });
+      y[i] = [f[2][i],f[0][i],f[1][i]];
+    };
+    y = y.sort(function(a, b) {
+      if (a[0] < b[0]){ return 1; }
+      if (a[0] > b[0]){ return -1; }
+      return 0;
+    });
+    var b = ';font-weight: bold;';
+    for(var i=0;i<f[0].length;i++) {
+      console.log('%cArray : %c['+y[i][1].join(', ')+']\n%cToplam: %c'+y[i][0]+' -> Elemanların indexleri: '+y[i][2].join(', '),b,'',b,'');
+    };
+  }
+  else { console.log("100'e eşit veya 100'den küçük dizi elemanı bulunamadı."); }
+  c=[];ci=[];temp=[];Arr=[];j=0;sayac=0;f=[[],[],[]];zerosIndex=[];jz=0;
+};//bitir
+</script>
+</body>
+</html>
