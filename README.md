@@ -1,3 +1,4 @@
 # Combination
 Javascript Developer test solution
-#tumerorkun.com/komb
+#online link
+[tumerorkun.com/komb](https://tumerorkun.com/komb)
