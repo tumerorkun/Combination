@@ -1,4 +1,4 @@
 # Combination
 Javascript Developer test and possible solution
-# Online
+### Online
 [tumerorkun.com/komb](https://tumerorkun.com/komb)
