@@ -155,17 +155,19 @@ function hesapla() { d = new Date().getTime();
       }
     };//komb
     var donguSay = Math.floor(ArrL*0.5),start = 1;
-    if( ArrM < 80 && ArrL > 15 ) {
-      start = Math.ceil(100/(ArrM*0.7));
-      if(start > ArrL) { start = Math.floor(ArrL*0.5) }
-      var Top = Arr.slice(0,start).reduce(getSum);
-      if( Top < ( 100 - ArrM*2.5 )  && ArrTop < ( 100 - ArrM*2.5 ) ) {
-        var i = start;
-        while ( Top <= ( 100 - ArrM*2 ) && Top != ArrTop){
-          Top = Arr.slice(0,i).reduce(getSum);
-          i++;
+    if( ArrL < (ArrM + 20) && (ArrM - 20) < ArrL){}else{
+      if( ArrM < 80 && ArrL > 15 ) {
+        start = Math.ceil(100/(ArrM*0.7));
+        if(start > ArrL) { start = Math.floor(ArrL*0.5) }
+        var Top = Arr.slice(0,start).reduce(getSum);
+        if( Top < ( 100 - ArrM*2.5 )  && ArrTop < ( 100 - ArrM*2.5 ) ) {
+          var i = start;
+          while ( Top <= ( 100 - ArrM*2 ) && Top != ArrTop){
+            Top = Arr.slice(0,i).reduce(getSum);
+            i++;
+          }
+          if(Top == ArrTop) { start = ArrL - 1;donguSay = ArrL } else { start = i; }
         }
-        if(Top == ArrTop) { start = ArrL - 1;donguSay = ArrL } else { start = i; }
       }
     }
     d = new Date().getTime();
