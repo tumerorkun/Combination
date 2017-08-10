@@ -48,7 +48,6 @@ body{padding: 20px;font-size:13px;line-height:15px;font-family:Arial,Helvetica,s
   </p>
 </div>
 <div id="ot">Orkun Tümer</div>
-
 <script>
 /*! Orkun Tümer */
 var d,f=[[],[],[]],ArrIndex=[],c=[],ci=[],temp=[],Arr=[],j=0,sayac=0,zerosIndex=[],jz=0,ArrFirst,arrayLength;
@@ -114,7 +113,7 @@ function hesapla() { d = new Date().getTime();
           else {
             var buyuk=[],buyukIndex=[];var cCon = c.concat();var ciCon = ci.concat();
             var cTop = cCon.reduce(getSum);var fark = ArrTop - cTop;var tempTop=0;
-            if((cTop + ArrM) < (100 - ArrM )) { return; }
+            if((cTop + ArrM) < (100 - ArrM )) { if( ArrTop >= 90 ){ return; } }
             if( fark <= 100 && fark > cTop) {
               temp = Arr.concat();
               for(var tr =0;tr<ci.length;tr++) { temp.splice(ci[tr],1,'ot'); };
