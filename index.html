@@ -79,21 +79,51 @@ function hesapla() { d = new Date().getTime();
   ArrM = parseInt(sec('arrayMax').value)||100;
   if(arrayEl != 0) {
     ArrFirst = arrayEl.split(',').map((e)=>{ return (!isNaN(parseInt(e)))?parseInt(e):0; });
-    ArrM = Math.max.apply(null,ArrFirst) + 1;
+    ArrM = Math.max.apply(null,ArrFirst);
   }
   else {
     arrayLength = parseInt(sec('arrayLength').value)||10;
     ArrFirst = new Array(arrayLength);//[...new Array(arrayLength)].map(() => Math.floor(Math.random() * ArrM));
-    for(var i = 0; i < arrayLength;i++){ ArrFirst[i] = Math.floor(Math.random() * ArrM); };
+    for(var i = 0; i < arrayLength;i++){ ArrFirst[i] = Math.floor(Math.random() * (ArrM +1)); };
   }
   sec('dizi').innerHTML = ArrFirst.join(', ');
   try{
-    for(i=0;i<ArrFirst.length;i++){
-      if(ArrFirst[i] == 0){ zerosIndex[jz] = ''+i;jz++; }
-      else if(ArrFirst[i]<=100 && ArrFirst[i] != 0) {
-        Arr[j]=ArrFirst[i]; ArrIndex[j]=i; j++;
+    TempArr = [];
+      for(i=0;i<ArrFirst.length;i++){
+        if(ArrFirst[i] == 0){ zerosIndex[jz] = ''+i;jz++; }
+        else if(ArrFirst[i]<=100 && ArrFirst[i] != 0) {
+          TempArr[i] = [ArrFirst[i],i];
+        }
+      };
+      TempArr = TempArr.filter(function(e){return e;})
+      TempArr.sort(function(a, b) {
+        if (a[0] < b[0]){ return 1; }
+        if (a[0] > b[0]){ return -1; }
+        else { return 0; }
+      });
+
+    var sort = 0;
+    for (var i = 0; i < TempArr.length-1; i++) {
+      var fark = TempArr[i][0] - TempArr[i+1][0];
+      if(fark <= 50) { continue; }
+      else { sort = 1;break; }
+    }
+    if( sort == 1) {
+      for( var i = 0; i<TempArr.length; i++ ) {
+        Arr[i] = TempArr[i][0]; ArrIndex[i] = TempArr[i][1];
       }
-    };
+    }
+    else {
+      for(i=0;i<ArrFirst.length;i++){
+        if(ArrFirst[i]<=100 && ArrFirst[i] != 0) {
+          Arr[j]=ArrFirst[i]; ArrIndex[j]=i; j++;
+        }
+      };
+    }
+    
+    
+    delete TempArr;
+
     var ArrTop = Arr.reduce(getSum);
     var ArrL = Arr.length;
     if(ArrL == 0) { d=new Date().getTime();bitir(1);return; }//100'ün altında eleman yoksa
@@ -113,7 +143,7 @@ function hesapla() { d = new Date().getTime();
           else {
             var buyuk=[],buyukIndex=[];var cCon = c.concat();var ciCon = ci.concat();
             var cTop = cCon.reduce(getSum);var fark = ArrTop - cTop;var tempTop=0;
-            if((cTop + ArrM) < (100 - ArrM )) { if( ArrTop >= 90 ){ return; } }
+            if((cTop + ArrM) < (100 - ArrM )) { if( ArrTop >= 150 ){ return; } }
             if( fark <= 100 && fark > cTop) {
               temp = Arr.concat();
               for(var tr =0;tr<ci.length;tr++) { temp.splice(ci[tr],1,'ot'); };
@@ -153,29 +183,38 @@ function hesapla() { d = new Date().getTime();
         };
       }
     };//komb
-    var donguSay = Math.floor(ArrL*0.5),start = 1;
-    if( ArrL < (ArrM + 20) && (ArrM - 20) < ArrL){}else{
-      if( ArrM < 80 && ArrL > 15 ) {
-        start = Math.ceil(100/(ArrM*0.7));
-        if(start > ArrL) { start = Math.floor(ArrL*0.5) }
-        var Top = Arr.slice(0,start).reduce(getSum);
-        if( Top < ( 100 - ArrM*2.5 )  && ArrTop < ( 100 - ArrM*2.5 ) ) {
-          var i = start;
-          while ( Top <= ( 100 - ArrM*2 ) && Top != ArrTop){
-            Top = Arr.slice(0,i).reduce(getSum);
-            i++;
-          }
-          if(Top == ArrTop) { start = ArrL - 1;donguSay = ArrL } else { start = i; }
-        }
-      }
+    var donguSay = Math.floor(ArrL*0.5),start = 1;var tp = ArrM;var tpi=0;
+    var max = ( ArrTop < 100 )? ArrTop : 100 ;
+    for(var i=tpi+1;ArrM < (max - tp);i++){
+      tp = Arr.slice(0,i).reduce(getSum);
+      tpi = i;
     }
+    // if( ArrL <= (ArrM + 30) && (ArrM - 30) < ArrL){}else{
+      //   if( ArrM < 80 && ArrL > 15 ) {
+      //     start = Math.ceil(100/(ArrM*0.7));
+      //     if(start >donguSay){start = 1;}
+      //     if(start > ArrL) { start = Math.floor(ArrL*0.5) }
+      //     var Top = Arr.slice(0,start).reduce(getSum);
+      //     if( Top < ( 100 - ArrM*2.5 )  && ArrTop < ( 100 - ArrM*2.5 ) ) {
+      //       var i = start;
+      //       while ( Top <= ( 100 - ArrM*2 ) && Top != ArrTop){
+      //         Top = Arr.slice(0,i).reduce(getSum);
+      //         i++;
+      //       }
+      //       if(Top == ArrTop) { start = ArrL - 1;donguSay = ArrL } else { start = i; }
+      //     }
+      //   }
+    // }
+        if(ArrL > 100 && ArrM == 1){tpi = 99;}
     d = new Date().getTime();
-    for(var son=start;son<=donguSay;son++) {
+              //start    //donguSay
+    for(var son=tpi+1;son<=ArrL;son++) {
       komb(0,son);
     };
     bitir();
   }
   catch(err) {
+    console.log(err);
     bitir();
   }
 };//hesapla
