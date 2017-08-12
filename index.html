@@ -50,29 +50,10 @@ body{padding: 20px;font-size:13px;line-height:15px;font-family:Arial,Helvetica,s
 <div id="ot">Orkun Tümer</div>
 <script>
 /*! Orkun Tümer */
-var d,f=[[],[],[]],ArrIndex=[],c=[],ci=[],temp=[],Arr=[],j=0,sayac=0,zerosIndex=[],jz=0,ArrFirst,arrayLength;
+var d,f=[[],[],[]],ArrIndex=[],c=[],ci=[],temp=[],Arr=[],ArrTop,j=0,sayac=0,zerosIndex=[],jz=0,ArrFirst,arrayLength,sort = 0;
 function sec(a) { return document.getElementById(a) };
 sec('hesapla').addEventListener('click',hesapla);
 function getSum(a,b) { return a+=b; };
-function den(buyuk,buyukIndex) {
-  var buyukTop = buyuk.reduce(getSum);
-  var sArr=f[0][0].concat(),
-      sArrTop = f[2][0],
-      sArrI=0;
-  for(var i=1; i<5; i++) {
-    if(f[2][i] < sArrTop) {
-      sArr = f[0][i].concat();
-      sArrTop = f[2][i];
-      sArrI = i;
-    }
-  };//f içindeki en küçük bulundu
-  if(sArrTop<buyukTop) {
-    f[0].splice(sArrI,1,buyuk);
-    f[1].splice(sArrI,1,buyukIndex);
-    f[2].splice(sArrI,1,buyukTop);
-  }
-  if(sayac == 5 || f[2].reduce(getSum) == 500) { throw 'Hepsi 100 olarak bulundu'; }
-};
 function hesapla() { d = new Date().getTime();
   console.clear();
   var arrayEl = sec('arrayEl').value||0;
@@ -95,23 +76,32 @@ function hesapla() { d = new Date().getTime();
           TempArr[i] = [ArrFirst[i],i];
         }
       };
+      if(zerosIndex.length != 0){
+        zerosIndex = zerosIndex.slice(0,4);
+        var tempZeros=[];
+        zerosIndex = zerosIndex.map(function(e){ return [parseInt(e)];});
+        for (var i = 0; i < zerosIndex.length; i++) {
+          tempZeros.push([parseInt(zerosIndex[i]),parseInt(zerosIndex[i+1])]);
+        }tempZeros.push([parseInt(zerosIndex[0]),parseInt(zerosIndex[2])]);
+        zerosIndex.concat(tempZeros);
+        console.log(zerosIndex);
+      }
       TempArr = TempArr.filter(function(e){return e;})
       TempArr.sort(function(a, b) {
         if (a[0] < b[0]){ return 1; }
         if (a[0] > b[0]){ return -1; }
         else { return 0; }
       });
-
-    var sort = 0;
+      
     for (var i = 0; i < TempArr.length-1; i++) {
       var fark = TempArr[i][0] - TempArr[i+1][0];
-      if(fark <= 50) { continue; }
+      if(fark <= 10) {  continue; }
       else { sort = 1;break; }
-    }
+    };
     if( sort == 1) {
       for( var i = 0; i<TempArr.length; i++ ) {
         Arr[i] = TempArr[i][0]; ArrIndex[i] = TempArr[i][1];
-      }
+      };
     }
     else {
       for(i=0;i<ArrFirst.length;i++){
@@ -120,13 +110,12 @@ function hesapla() { d = new Date().getTime();
         }
       };
     }
-    
-    
+    for(var i = 0;i<zerosIndex.length;i++){Arr.push(0);ArrIndex.push(zerosIndex[i]);}
     delete TempArr;
 
-    var ArrTop = Arr.reduce(getSum);
     var ArrL = Arr.length;
     if(ArrL == 0) { d=new Date().getTime();bitir(1);return; }//100'ün altında eleman yoksa
+    ArrTop = Arr.reduce(getSum);
     if(ArrTop <= 100) {
       if(ArrTop == 100) { sayac++; }
       var idx=[];
@@ -144,34 +133,22 @@ function hesapla() { d = new Date().getTime();
             var buyuk=[],buyukIndex=[];var cCon = c.concat();var ciCon = ci.concat();
             var cTop = cCon.reduce(getSum);var fark = ArrTop - cTop;var tempTop=0;
             if((cTop + ArrM) < (100 - ArrM )) { if( ArrTop >= 150 ){ return; } }
-            if( fark <= 100 && fark > cTop) {
+            if( fark <= 100 && fark >= cTop && cTop <= 100) {
               temp = Arr.concat();
               for(var tr =0;tr<ci.length;tr++) { temp.splice(ci[tr],1,'ot'); };
               var tempIndex = temp.map((en,ix)=>{ if(en=='ot') { return en; } else { return ix; } })
                                   .filter((en)=>en!='ot');
               temp = temp.filter((e)=>e!='ot');
               tempTop = temp.reduce(getSum);//C(n/1) ise C(n/n-1)de hesaplandı
-              if(cTop >100 && tempTop >100) { c.pop();ci.pop();continue; }
+              //if(cTop >100 && tempTop >100) { c.pop();ci.pop();continue; }
               if(cTop == 100 && tempTop == 100) { sayac = sayac + 2;ekle(cCon,ciCon);ekle(temp,tempIndex);c.pop();ci.pop();continue; }
-              if(cTop<=100 && tempTop <= 100) {
+              else {
                 if(f[0].length < 5) {
                   if(tempTop != 0) { ekle(temp,tempIndex);tempTop=0; }
                   ekle(cCon,ciCon);c.pop();ci.pop();continue;
                 }
                 else {
-                  if(cTop>tempTop) { buyuk = cCon; buyukIndex = ciCon; }
-                  else { buyuk = temp; buyukIndex = tempIndex; }
-                  //ikilinin büyüğü belirlendi
-                }
-              }
-              else {
-                if(cTop<=100 && tempTop>100){
-                  if(cVarmi > 0) { c.pop();ci.pop();continue; }
-                  buyuk = cCon; buyukIndex = ciCon;
-                }
-                else {
-                  if(tempVarmi > 0) { c.pop();ci.pop();continue; }
-                  buyuk = temp; buyukIndex = tempIndex;
+                  buyuk = temp; buyukIndex = tempIndex; //ikilinin büyüğü ve 100 sınırında kalan
                 }
               }
             }
@@ -183,34 +160,21 @@ function hesapla() { d = new Date().getTime();
         };
       }
     };//komb
-    var donguSay = Math.floor(ArrL*0.5),start = 1;var tp = ArrM;var tpi=0;
+    var donguSay = Math.floor(ArrL*0.5),start = 1;var tp = ArrM;var tpi=0;var tM = ArrM;
     var max = ( ArrTop < 100 )? ArrTop : 100 ;
-    for(var i=tpi+1;ArrM < (max - tp);i++){
+    for(var i=tpi+1;tM < (max - tp);i++){
       tp = Arr.slice(0,i).reduce(getSum);
+      tM = Math.max.apply(null,Arr.slice(i));
       tpi = i;
     }
-    // if( ArrL <= (ArrM + 30) && (ArrM - 30) < ArrL){}else{
-      //   if( ArrM < 80 && ArrL > 15 ) {
-      //     start = Math.ceil(100/(ArrM*0.7));
-      //     if(start >donguSay){start = 1;}
-      //     if(start > ArrL) { start = Math.floor(ArrL*0.5) }
-      //     var Top = Arr.slice(0,start).reduce(getSum);
-      //     if( Top < ( 100 - ArrM*2.5 )  && ArrTop < ( 100 - ArrM*2.5 ) ) {
-      //       var i = start;
-      //       while ( Top <= ( 100 - ArrM*2 ) && Top != ArrTop){
-      //         Top = Arr.slice(0,i).reduce(getSum);
-      //         i++;
-      //       }
-      //       if(Top == ArrTop) { start = ArrL - 1;donguSay = ArrL } else { start = i; }
-      //     }
-      //   }
-    // }
-        if(ArrL > 100 && ArrM == 1){tpi = 99;}
+
+    if(ArrL > 100 && ArrM == 1){tpi = 99;}
     d = new Date().getTime();
               //start    //donguSay
     for(var son=tpi+1;son<=ArrL;son++) {
       komb(0,son);
     };
+    if(f[0].length != 5){komb(0,ArrL - 1)};
     bitir();
   }
   catch(err) {
@@ -218,30 +182,55 @@ function hesapla() { d = new Date().getTime();
     bitir();
   }
 };//hesapla
+var zero = 0;
 function ekle(buyuk,buyukIndex,a) {
   if(f[1].filter((e)=>e.toString() == buyukIndex.toString()).length == 0){
-    if(f[0].length === 5) { den(buyuk,buyukIndex); }
+    var buyukTop = buyuk.reduce(getSum);
+    if(f[0].length === 5) { den(buyuk,buyukIndex,buyukTop); }
     else {
       f[0].push(buyuk);
       f[1].push(buyukIndex);
-      f[2].push(buyuk.reduce(getSum));
+      f[2].push(buyukTop);
     }
-    if(buyuk.reduce(getSum) == 100 && zerosIndex.length != 0 && a!=1) {
-      buyuk = buyuk.concat(0);
-      buyukIndex = buyukIndex.concat(zerosIndex.pop());
-      sayac++;
-      ekle(buyuk,buyukIndex,1);
-    }
+    // var tMAx = (ArrTop < 100)?ArrTop:100;
+    // if(buyukTop == tMAx && zerosIndex.length != 0 && a!=3) {
+    //   for(var i = 0;i<zerosIndex.length;i++){
+
+    //     for(var b= 0;b<zerosIndex.length;b++) { buyuk.push(0);}
+
+    //     buyukIndex.push(zerosIndex[i].concat());
+    //     sayac++;  
+    //     ekle(buyuk,buyukIndex,3);
+    //     buyuk = buyuk.slice(0,-zerosIndex[i].length);
+    //     buyukIndex = buyukIndex.slice(0,-zerosIndex[i].length);
+    //   }
+    // }
   }
 };//ekle
-function bitir(err) {
+function den(buyuk,buyukIndex,buyukTop) {
+  var sArrTop = f[2][0],
+      sArrI=0;
+  for(var i=1; i<5; i++) {
+    if(f[2][i] < sArrTop) {
+      sArrTop = f[2][i];
+      sArrI = i;
+    }
+  };//f içindeki en küçük bulundu
+  if(sArrTop<buyukTop) {
+    f[0].splice(sArrI,1,buyuk);
+    f[1].splice(sArrI,1,buyukIndex);
+    f[2].splice(sArrI,1,buyukTop);
+  }
+  if(sayac == 5 || f[2].reduce(getSum) == 500) { throw 'Hepsi 100 olarak bulundu'; }
+};//den (kontrol - helper func)
+function bitir(err) { zero = 0;
   var sure = Math.abs(new Date().getTime() - d);var y=[];
   console.log('Script çalışma Zamanı: '+sure+' ms');
   sec('sure').innerHTML = sure;
   if(err != 1) {
     for (var i = 0; i < f[1].length; i++) {
       f[1][i] = f[1][i].map((e,ind)=>{
-        if(f[0][i][ind] == 0) { return e; }
+        //if(f[0][i][ind] == 0) { return e; }
         return ArrIndex[e];
       });
       y[i] = [f[2][i],f[0][i],f[1][i]];
@@ -256,8 +245,11 @@ function bitir(err) {
       console.log('%cArray : %c['+y[i][1].join(', ')+']\n%cToplam: %c'+y[i][0]+' -> Elemanların indexleri: '+y[i][2].join(', '),b,'',b,'');
     };
   }
-  else { console.log("100'e eşit veya 100'den küçük dizi elemanı bulunamadı."); }
-  c=[];ci=[];temp=[];Arr=[];j=0;sayac=0;f=[[],[],[]];zerosIndex=[];jz=0;
+  else {
+    if(zerosIndex.length != 0) { console.log("Dizide eleman olarak sadece '0'(sıfır) bulunuyor."); }
+    else { console.log("100'e eşit veya 100'den küçük dizi elemanı bulunamadı."); }
+  }
+  c=[];ci=[];temp=[];Arr=[];j=0;sayac=0;f=[[],[],[]];tempZeros=0;zerosIndex=[];jz=0;sort=0;
 };//bitir
 </script>
 </body>
